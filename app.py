@@ -55,7 +55,7 @@ year=st.sidebar.multiselect(
 month= st.sidebar.multiselect(
      "Seleccione el Mes:",
     options=df["MES"].unique(),
-    default =df["MES"].unique(),
+    default ="ENERO",
  )
 ito_type = st.sidebar.multiselect(
     "Seccione el tipo de ITO:",
