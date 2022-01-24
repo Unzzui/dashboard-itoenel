@@ -1,6 +1,8 @@
 from ast import While
 from csv import writer
+from datetime import date
 from enum import unique
+from matplotlib import markers
 from matplotlib.pyplot import title
 import streamlit as st
 import pandas as pd
@@ -55,6 +57,8 @@ year=st.sidebar.multiselect(
     default=2022
     # default=df["AÑO"].unique(),
 )
+
+
 
 month= st.sidebar.multiselect(
      "Seleccione el Mes:",
@@ -178,8 +182,29 @@ else:
     st.plotly_chart(fig_produccion_ito_date)
 
     
+orden_date = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO', 'JULIO', 'AGOSTO',
+'SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE']
 
 
+# df_selection["FECHA"]=pd.to_datetime(df_selection["FECHA"], format = "%m").dt.month_name().str.slice(stop=3)
+
+df_selection["MES"] = pd.Categorical(df_selection["MES"], orden_date)
+total_by_month=(
+
+    df_selection.groupby(by=["MES"]).sum()[["REALIZADO $"]]
+)
+
+
+fig_total_by_month=px.line(
+    total_by_month,
+    x=total_by_month.index,
+    y="REALIZADO $",
+    title="Total por Mes",
+    markers=True
+    
+)
+
+st.plotly_chart(fig_total_by_month)
 
 total_by_baremo = (
     df_selection.groupby(by=["CODIGO"]).sum()[["REALIZADO $"]]
