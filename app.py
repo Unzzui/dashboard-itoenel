@@ -82,6 +82,11 @@ st.markdown("##")
 
 st.download_button(label='Descargar CSV', data=df_selection.to_csv(), mime='text/csv')
 
+# ----- MarkDown ----
+most_recent_date = df["FECHA"].max().strftime("%d-%m-%y")
+
+st.subheader("Datos actualizados al: ")
+st.subheader(f"{most_recent_date}")
 
 
 # ---- TOP KPI'S ----
