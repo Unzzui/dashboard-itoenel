@@ -49,7 +49,7 @@ st.sidebar.header("Filtrar Aqui:")
 year=st.sidebar.multiselect(
     "Seleccione el Año:",
     options=df["AÑO"].unique(),
-    default=df["AÑO"].unique(),
+    default=2022,
 )
 
 month= st.sidebar.multiselect(
