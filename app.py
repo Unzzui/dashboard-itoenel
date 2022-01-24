@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from ast import While
 from csv import writer
 from enum import unique
@@ -267,4 +266,4 @@ fig_producion_ito.update_layout(
 )
 
 st.plotly_chart(fig_producion_ito)
->>>>>>> f6b9c5f (initial)
+
