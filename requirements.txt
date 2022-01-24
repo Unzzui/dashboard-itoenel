@@ -3,12 +3,10 @@ Markdown==3.3.4
 numpy==1.19.5
 plotly==4.14.3
 pandas==1.2.0
-<<<<<<< HEAD
 streamlit==1.4.0
 openpyxl==3.0.6
 matplotlib==3.4.2
 matplotlib-inline==0.1.2
-=======
 streamlit==0.86.0
 openpyxl==3.0.6
->>>>>>> f6b9c5f (initial)
+
