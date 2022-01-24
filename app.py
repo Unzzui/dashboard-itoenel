@@ -9,12 +9,16 @@ from re import sub
 from markdown import markdown
 import plotly.express as px 
 import time
-    
+from PIL import Image
+
+img = Image.open('oca.jpg')
+img1=Image.open('oca1.png')
+ 
 # --- Web App Title ----
 
-st.set_page_config(page_title="ITO Enel", page_icon=":bar_chart:", layout="wide")
+st.set_page_config(page_title="ITO Enel", page_icon=img, layout="wide")
 
-
+st.image(img1 , width=250)
 st.markdown('''
 
 # **DashBoard ITO Enel **
@@ -153,13 +157,28 @@ fig_produccion_ito_date = px.bar(
 )
 
 
+
 fig_produccion_ito_date.update_layout(
 
     plot_bgcolor="rgba (0,0,0,0)",
     xaxis=(dict(showgrid=False))
 )
 
-st.plotly_chart(fig_produccion_ito_date)
+
+result =st.button(
+    label="Ocultar"
+)
+
+if result==True:
+    del(fig_produccion_ito_date)
+    result =st.button(
+    label="Mostrar"
+)
+else:
+    st.plotly_chart(fig_produccion_ito_date)
+
+    
+
 
 
 total_by_baremo = (
