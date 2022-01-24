@@ -9,7 +9,6 @@ from re import sub
 from markdown import markdown
 import plotly.express as px 
 import time
-
     
 # --- Web App Title ----
 
@@ -49,7 +48,8 @@ st.sidebar.header("Filtrar Aqui:")
 year=st.sidebar.multiselect(
     "Seleccione el Año:",
     options=df["AÑO"].unique(),
-    default=2022,
+    default=2022
+    # default=df["AÑO"].unique(),
 )
 
 month= st.sidebar.multiselect(
@@ -82,12 +82,12 @@ st.markdown("##")
 
 st.download_button(label='Descargar CSV', data=df_selection.to_csv(), mime='text/csv')
 
+
 # ----- MarkDown ----
 most_recent_date = df["FECHA"].max().strftime("%d-%m-%y")
 
 st.subheader("Datos actualizados al: ")
 st.subheader(f"{most_recent_date}")
-
 
 # ---- TOP KPI'S ----
 total_produccion = int(df_selection["REALIZADO $"].sum())
@@ -135,6 +135,33 @@ fig_producion_ito.update_layout(
 
 st.plotly_chart(fig_producion_ito)
 
+produccion_ito_date = (
+    df_selection.groupby(by="FECHA").sum()[["REALIZADO $"]]
+)
+
+##----
+
+fig_produccion_ito_date = px.bar(
+
+    produccion_ito_date,
+    x=produccion_ito_date.index,
+    y="REALIZADO $",
+    orientation="v",
+    title="<b> Producción Total Según Fecha (Días)</b>",
+    color_discrete_sequence=["#0083b8"] * len(total_by_ito),
+    template="plotly_white",
+)
+
+
+fig_produccion_ito_date.update_layout(
+
+    plot_bgcolor="rgba (0,0,0,0)",
+    xaxis=(dict(showgrid=False))
+)
+
+st.plotly_chart(fig_produccion_ito_date)
+
+
 total_by_baremo = (
     df_selection.groupby(by=["CODIGO"]).sum()[["REALIZADO $"]]
 )
@@ -154,4 +181,3 @@ while True:
      # Update every 5 mins
      load_csv()
      time.sleep(1)  
-
