@@ -1,7 +1,10 @@
 from ast import While
 from csv import writer
 from datetime import date
+from email import message
 from enum import unique
+from optparse import Values
+from cv2 import dft
 from matplotlib import markers
 from matplotlib.pyplot import title
 import streamlit as st
@@ -12,6 +15,12 @@ from markdown import markdown
 import plotly.express as px 
 import time
 from PIL import Image
+import smtplib, ssl
+
+
+
+# ---- Start App ----- 
+
 
 img = Image.open('oca.jpg')
 img1=Image.open('oca1.png')
@@ -28,6 +37,22 @@ Esta es una app web creada para facilitar la visualización de datos del proyect
 ---
 ''')
 
+# email="unzzui@gmail.com"
+# password="Dabb210897."
+# email_reciever="diego.bravo@ocaglobal.com"
+# subject="Prueba"
+# body="Texto de prueba"
+
+# if st.button("Aviso de Actualización"):
+#     port = 465 
+#     password="Dabb210897."
+#     context=ssl.create_default_context()
+
+#     with smtplib.SMTP_SSL("smtp.gmail.com", port,context=context) as server:
+#         server.login("unzzui@gmail.com", password)
+
+# else:
+#     None
 
 # st_autorefresh(interval=0.1*60*1000, key="dataframerefresh")
 
@@ -35,9 +60,12 @@ Esta es una app web creada para facilitar la visualización de datos del proyect
 def load_csv():
     df = pd.read_csv('BD_ITO_ENEL.csv')
     df['FECHA'] = pd.to_datetime(df['FECHA'], infer_datetime_format=True)
+    df["DIAS ENTREGA DOCUMENTACION"] = df["DIAS ENTREGA DOCUMENTACION"].replace(["FALTAN DOCUMENTOS"],0)
+    df["DIAS ENTREGA DOCUMENTACION"] = df["DIAS ENTREGA DOCUMENTACION"].astype(int)
     return df
+
     
-df = load_csv()    
+df = load_csv()   
 
 with st.container():
     st.write("---")
@@ -185,23 +213,18 @@ else:
 orden_date = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO', 'JULIO', 'AGOSTO',
 'SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE']
 
-
-# df_selection["FECHA"]=pd.to_datetime(df_selection["FECHA"], format = "%m").dt.month_name().str.slice(stop=3)
-
 df_selection["MES"] = pd.Categorical(df_selection["MES"], orden_date)
 total_by_month=(
 
     df_selection.groupby(by=["MES"]).sum()[["REALIZADO $"]]
 )
 
-
 fig_total_by_month=px.line(
     total_by_month,
     x=total_by_month.index,
     y="REALIZADO $",
-    title="Total por Mes",
+    title="<b>Total por Mes <b>",
     markers=True
-    
 )
 
 st.plotly_chart(fig_total_by_month)
@@ -210,16 +233,20 @@ total_by_baremo = (
     df_selection.groupby(by=["CODIGO"]).sum()[["REALIZADO $"]]
 )
 
-
 pie_chart = px.pie(
     total_by_baremo,
     values="REALIZADO $",
     names=total_by_baremo.index,
-    title="Realizado por Codigo de Baremo",
+    title="<b>Realizado por Codigo de Baremo<b>",
 )
 
 st.plotly_chart(pie_chart)
 
+st.subheader("Promedio Entrega de documentación al mandante")
+average =(df_selection.groupby(by=["INSPECTOR"]).sum()["DIAS ENTREGA DOCUMENTACION"])/(df_selection.groupby(by=["INSPECTOR"])["DIAS ENTREGA DOCUMENTACION"]).size()
+st.write(average)
+
+# st.table(average_doc_ito)
 
 while True:
      # Update every 5 mins
