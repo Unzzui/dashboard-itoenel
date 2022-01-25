@@ -4,7 +4,6 @@ from datetime import date
 from email import message
 from enum import unique
 from optparse import Values
-from cv2 import dft
 from matplotlib import markers
 from matplotlib.pyplot import title
 import streamlit as st
@@ -15,7 +14,7 @@ from markdown import markdown
 import plotly.express as px 
 import time
 from PIL import Image
-import smtplib, ssl
+
 
 
 
