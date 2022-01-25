@@ -4,6 +4,7 @@ from datetime import date
 from email import message
 from enum import unique
 from optparse import Values
+from cv2 import dft
 from matplotlib import markers
 from matplotlib.pyplot import title
 import streamlit as st
@@ -14,8 +15,9 @@ from markdown import markdown
 import plotly.express as px 
 import time
 from PIL import Image
-
-
+import smtplib, ssl
+from pyxlsb import open_workbook as open_xlsb
+from datetime import date
 
 
 # ---- Start App ----- 
@@ -36,24 +38,6 @@ Esta es una app web creada para facilitar la visualización de datos del proyect
 ---
 ''')
 
-# email="unzzui@gmail.com"
-# password="Dabb210897."
-# email_reciever="diego.bravo@ocaglobal.com"
-# subject="Prueba"
-# body="Texto de prueba"
-
-# if st.button("Aviso de Actualización"):
-#     port = 465 
-#     password="Dabb210897."
-#     context=ssl.create_default_context()
-
-#     with smtplib.SMTP_SSL("smtp.gmail.com", port,context=context) as server:
-#         server.login("unzzui@gmail.com", password)
-
-# else:
-#     None
-
-# st_autorefresh(interval=0.1*60*1000, key="dataframerefresh")
 
 @st.cache(ttl=60)
 def load_csv():
@@ -114,6 +98,28 @@ st.title(":bar_chart: Producción ITO Enel")
 st.markdown("##")
 
 # ---- DownLoad Buttons ----
+
+# ---- To Excel ----
+def to_excel(df_selection):
+    output = BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    df_selection.to_excel(writer, index=False, sheet_name='Sheet1')
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    format1 = workbook.add_format({'num_format': '0.00'}) 
+    worksheet.set_column('A:A', None, format1)  
+    writer.save()
+    processed_data = output.getvalue()
+    return processed_data
+ 
+today = date.today()
+today = today.strftime("%d/%m/%Y")
+
+df_selection_xlsx = to_excel(df_selection)   
+st.download_button(label='📥 Descargar Excel',
+                                data=df_selection_xlsx ,
+                                file_name='Control_ITO_ENEL'+today +'.xlsx')
+
 
 st.download_button(label='Descargar CSV', data=df_selection.to_csv(), mime='text/csv')
 
@@ -248,6 +254,6 @@ st.write(average)
 # st.table(average_doc_ito)
 
 while True:
-     # Update every 5 mins
+     # Update every 1 seg
      load_csv()
      time.sleep(1)  
