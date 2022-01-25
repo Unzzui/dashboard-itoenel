@@ -13,7 +13,7 @@ from markdown import markdown
 import plotly.express as px 
 import time
 from PIL import Image
-import smtplib, ssl
+from io import BytesIO
 from pyxlsb import open_workbook as open_xlsb
 
 
