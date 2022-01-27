@@ -257,8 +257,3 @@ average =(df_selection.groupby(by=["INSPECTOR"]).sum()["DIAS ENTREGA DOCUMENTACI
 st.write(average)
 
 # st.table(average_doc_ito)
-
-while True:
-     # Update every 1 seg
-     load_csv()
-     time.sleep(1)  
